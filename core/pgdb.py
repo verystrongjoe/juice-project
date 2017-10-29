@@ -11,7 +11,7 @@ import datetime      as dt
 import numpy         as np
 import pandas        as pd
 import sqlalchemy    as sql
-import api.persist.pg as pg
+import core.persist.pg as pg
 
 db = pg.Postgre('postgres://tkrapi:tkrapi@127.0.0.1/tkrapi')
 

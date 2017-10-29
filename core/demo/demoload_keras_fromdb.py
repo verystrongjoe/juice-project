@@ -9,7 +9,7 @@ Demo:
 
 """
 
-import api.kerastkr as kerastkr
+import core.kerastkr as kerastkr
 
 out_df = kerastkr.load_predict_keraslinear()
 print(out_df)

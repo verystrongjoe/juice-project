@@ -1,7 +1,7 @@
 import glob
 import os
 import pandas as pd
-import api.persist.pg as pg
+import core.persist.pg as pg
 
 def copy2db(tkrdir, target_db_url) :
 

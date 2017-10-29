@@ -5,6 +5,7 @@ data/tkrhtml/
 # virtualenv #
 ##############
 venv/
+build/
 
 # Compiled source #
 ###################

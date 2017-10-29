@@ -8,8 +8,8 @@ import numpy         as np
 import pandas        as pd
 import sqlalchemy    as sql
 import keras
-import api.pgdb as pgdb
-import api.persist.pg as pg
+import core.pgdb as pgdb
+import core.persist.pg as pg
 
 # https://keras.io/models/model/#methods
 batch_size_i = 256 # Doc: Number of samples per gradient update.

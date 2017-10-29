@@ -8,25 +8,37 @@ import time
 
 import time
 from datetime import date
-
+import config
+import core.util.time as util
+import logging
 
 class CrawlYahooTkr :
 
-    homeDir = os.environ['HOME']
-    #tkr  = os.environ['TKR']
-    outdirc = homeDir+'\\data\\tkrcsv\\'
-    outdirh = homeDir+'\\data\\tkrhtml\\'
     user_agent_s = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.104 Safari/537.36'
     qurl_s = 'https://query1.finance.yahoo.com/v7/finance/download/'
-
-    startdate = '1262332800'    # '1420099200' # 150101  #-631123200
-    p1p2_s = '?period1='+startdate+'&period2='
-
-
-    ie_s = '&interval=1d&events='
     csv_type_l = ['div','history','split']
 
-    def __init__(self, homeDir = os.environ['HOME']):
+    startdate = config.CRAWL_CONFIG['start_date']
+    enddate = config.CRAWL_CONFIG['end_date'] # ''1262332800'    # '1420099200' # 150101  #-631123200
+
+    p1p2_s = '?period1='+str(util.get_unix_time(startdate))+'&period2='
+    ie_s = '&interval=1d&events='
+    outdirc = ''
+    outdirh = ''
+    tkr  = ''
+
+
+    def __init__(self, ticker= ''):
+
+        logging.info('************----- %s', config.APP_CONFIG['HOME'] + config.CRAWL_CONFIG['ticker_output_csv_path'])
+
+        self.outdirc = config.APP_CONFIG['HOME'] + config.CRAWL_CONFIG['ticker_output_csv_path']
+        self.outdirh = config.APP_CONFIG['HOME'] + config.CRAWL_CONFIG['ticker_output_html_path']
+
+        if ticker is None or ticker == '' :
+            tkr = ''
+        else :
+            tkr = config.CRAWL_CONFIG['TKR']
 
         if not os.path.exists(self.outdirc) :
             os.makedirs(self.outdirc)
@@ -34,8 +46,11 @@ class CrawlYahooTkr :
         if not os.path.exists(self.outdirh) :
             os.makedirs(self.outdirh)
 
-    def download_csv(self, tkr):
+        self.startdate = config.CRAWL_CONFIG['start_date']
+        self.enddate = config.CRAWL_CONFIG['end_date'] # ''1262332800'    # '1420099200' # 150101  #-631123200
 
+
+    def download_csv(self, tkr):
         url1_s = 'https://finance.yahoo.com/quote/' + tkr
         url2_s = url1_s + '/history?p=' + tkr
         headers_d = {'User-Agent': self.user_agent_s}
@@ -48,7 +63,7 @@ class CrawlYahooTkr :
             tkr2_r = ssn.get(url2_s, headers=headers_d)
             html_s = tkr2_r.content.decode("utf-8")
 
-            with open(self.outdirh+tkr+'.html','w') as fh:
+            with open(self.outdirh+ '\\' +tkr+'.html','w') as fh:
                 fh.write(html_s)
 
             pattern_re = r'(CrumbStore":{"crumb":")(.+?")'
@@ -56,9 +71,9 @@ class CrawlYahooTkr :
             crumb_s    = pattern_ma.group(2).replace(r'"', '')
 
             for type_s in self.csv_type_l:
-                d = datetime.datetime.now()
-                nowutime_s = int(time.mktime(d.timetuple()))
-                #nowutime_s = datetime.datetime.now().strftime("%s"))
+                # d = datetime.datetime.now()
+                # nowutime_s = int(time.mktime(d.timetuple()))
+                nowutime_s = util.get_unix_time(self.enddate)
 
                 csvurl_s   = self.qurl_s+tkr+self.p1p2_s+str(nowutime_s)+self.ie_s+type_s+'&crumb='+crumb_s
 
@@ -66,12 +81,11 @@ class CrawlYahooTkr :
                 time.sleep(4)
                 csv_r  = ssn.get(csvurl_s, headers=headers_d)
                 csv_s  = csv_r.content.decode("utf-8")
-                csvf_s = self.outdirc+type_s+'\\'+tkr+'.csv'
+                csvf_s = self.outdirc+'\\'+type_s+'\\'+tkr+'.csv'
                 if (csv_r.status_code == 200):
 
-                    if not os.path.exists(self.outdirc+type_s+'\\'):
-                        os.makedirs(self.outdirc+type_s+'\\')
-
+                    if not os.path.exists(self.outdirc+ '\\' + type_s+'\\'):
+                        os.makedirs(self.outdirc+'\\' + type_s+'\\')
                     try :
                         os.remove(csvf_s)
                     except :

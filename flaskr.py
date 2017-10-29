@@ -35,9 +35,9 @@ import pandas        as pd
 import sqlalchemy    as sql
 import sklearn.linear_model as skl
 # modules in the py folder:
-import api.pgdb as pgdb
-import api.sktkr as sktkr
-import api.kerastkr as kerastkr
+import core.pgdb as pgdb
+import core.sktkr as sktkr
+import core.kerastkr as kerastkr
 
 # I should connect to the DB
 db_s = 'postgres://tkrapi:tkrapi@127.0.0.1/tkrapi'

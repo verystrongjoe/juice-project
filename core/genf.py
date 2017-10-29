@@ -5,7 +5,7 @@ import numpy      as np
 import pandas     as pd
 import sqlalchemy as sql
 import sys
-import api.persist.pg as pg
+import core.persist.pg as pg
 
 
 def genf(target_db_url) :

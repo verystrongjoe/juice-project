@@ -16,7 +16,7 @@ import pandas        as pd
 import sqlalchemy    as sql
 import sklearn.linear_model as skl
 # modules in the py folder:
-import api.pgdb as pgdb
+import core.pgdb as pgdb
 
 # By default, I should train from 20 years of data.
 
